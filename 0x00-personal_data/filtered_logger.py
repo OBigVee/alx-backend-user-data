@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
 """obfuscated log message"""
+
 import logging
 import re
 from typing import List
+
+
+PII_FIELDS = ('email', 'phone', 'ssn', 'password','ip')
+
 
 
 def filter_datum(
@@ -20,6 +25,8 @@ def filter_datum(
 class RedactingFormatter(logging.Formatter):
     """Redacting Formatter class"""
 
+    
+
     REDACTION = "***"
     FORMAT = "[HOLBERTON] %(name)s %(levelname)s %(asctime)-15s: %(message)s"
     SEPARATOR = ";"
@@ -35,3 +42,15 @@ class RedactingFormatter(logging.Formatter):
             super(RedactingFormatter, self).format(record),
             self.SEPARATOR,
         )
+
+def get_logger()->logging.Logger:
+    """returns a reference to a logger instance."""
+    logger = logging.getLogger("user_data")
+    logger.setLevel(logging.INFO)
+    logger.propagate = False
+    streamH = logging.StreamHandler()
+    formatter = RedactingFormatter(PII_FIELDS)
+    logger.setFormatter(formatter)
+    logger.addHandler(streamH)
+    return logger
+    #return logger.info(logging.StreamHandler(RedactingFormatter))
