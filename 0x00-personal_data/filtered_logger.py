@@ -7,9 +7,7 @@ import mysql.connector
 from os import getenv
 
 
-
-PII_FIELDS = ('email', 'phone', 'ssn', 'password','ip')
-
+PII_FIELDS = ("email", "phone", "ssn", "password", "ip")
 
 
 def filter_datum(
@@ -27,8 +25,6 @@ def filter_datum(
 class RedactingFormatter(logging.Formatter):
     """Redacting Formatter class"""
 
-    
-
     REDACTION = "***"
     FORMAT = "[HOLBERTON] %(name)s %(levelname)s %(asctime)-15s: %(message)s"
     SEPARATOR = ";"
@@ -45,7 +41,8 @@ class RedactingFormatter(logging.Formatter):
             self.SEPARATOR,
         )
 
-def get_logger()->logging.Logger:
+
+def get_logger() -> logging.Logger:
     """returns a reference to a logger instance."""
     logger = logging.getLogger("user_data")
     logger.setLevel(logging.INFO)
@@ -55,19 +52,21 @@ def get_logger()->logging.Logger:
     logger.setFormatter(formatter)
     logger.addHandler(streamH)
     return logger
-    #return logger.info(logging.StreamHandler(RedactingFormatter))
+    # return logger.info(logging.StreamHandler(RedactingFormatter))
 
-def get_db()->mysql.connector.connection.MySQLConnection:
+
+def get_db() -> mysql.connector.connection.MySQLConnection:
     """returns a connector to the DB"""
     db_connection = mysql.connector.connection.MySQLConnection(
-        user=getenv("PERSONAL_DATA_DB_USERNAME","root"),
-        password=getenv("PERSONAL_DATA_DB_PASSWORD",""),
+        user=getenv("PERSONAL_DATA_DB_USERNAME", "root"),
+        password=getenv("PERSONAL_DATA_DB_PASSWORD", ""),
         host=getenv("PERSONAL_DATA_DB_HOST", "localhost"),
-        database=getenv("PERSONAL_DATA_DB_NAME")
+        database=getenv("PERSONAL_DATA_DB_NAME"),
     )
     return db_connection
 
-def main()->None:
+
+def main() -> None:
     """DB View function and return None:
     The function will obtain a database connection using 'get_db'
     and retrieve all rows in the 'users' table and display each row
@@ -80,9 +79,10 @@ def main()->None:
     logger = get_logger()
 
     for row in cursor:
-        _row = "".join(f"{field} = {str(r_entry)}; " for r_entry, field in zip(row,fields))
+        _row = "".join(
+            f"{field} = {str(r_entry)}; " for r_entry, field in zip(row, fields)
+        )
         logger.info(_row.strip())
 
     cursor.close()
     db.close()
-
