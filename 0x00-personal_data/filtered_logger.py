@@ -68,7 +68,10 @@ def get_db()->mysql.connector.connection.MySQLConnection:
     return db_connection
 
 def main()->None:
-    """DB View  function and return None"""
+    """DB View unction and return None:
+    The function will obtain a database connection using 'get_db'
+    and retrieve all rows in the 'users' table and display each row
+    under a filtered format like this:"""
     db = get_db()
     cursor = db.cursor()
     cursor.execute("SELECT * FROM users;")
@@ -83,4 +86,3 @@ def main()->None:
     cursor.close()
     db.close()
 
-    
