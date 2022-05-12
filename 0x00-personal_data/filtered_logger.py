@@ -80,7 +80,7 @@ def main()->None:
     logger = get_logger()
 
     for row in cursor:
-        _row = "".join(f"{f} = {str(r_entry)}; " for r_entry, field in zip(row,fields))
+        _row = "".join(f"{field} = {str(r_entry)}; " for r_entry, field in zip(row,fields))
         logger.info(_row.strip())
 
     cursor.close()
