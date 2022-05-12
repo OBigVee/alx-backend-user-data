@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """obfuscated log message"""
-
-import logging
 import re
+import logging
 from typing import List
+import mysql.connector
+from os import getenv
+
 
 
 PII_FIELDS = ('email', 'phone', 'ssn', 'password','ip')
@@ -54,3 +56,31 @@ def get_logger()->logging.Logger:
     logger.addHandler(streamH)
     return logger
     #return logger.info(logging.StreamHandler(RedactingFormatter))
+
+def get_db()->mysql.connector.connection.MySQLConnection:
+    """returns a connector to the DB"""
+    db_connection = mysql.connector.connection.MySQLConnection(
+        user=getenv("PERSONAL_DATA_DB_USERNAME","root"),
+        password=getenv("PERSONAL_DATA_DB_PASSWORD",""),
+        host=getenv("PERSONAL_DATA_DB_HOST", "localhost"),
+        database=getenv("PERSONAL_DATA_DB_NAME")
+    )
+    return db_connection
+
+def main()->None:
+    """DB View  function and return None"""
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM users;")
+    fields = [field[0] for field in cursor.description]
+
+    logger = get_logger()
+
+    for row in cursor:
+        _row = "".join(f"{f} = {str(r_entry)}; " for r_entry, field in zip(row,fields))
+        logger.info(_row.strip())
+
+    cursor.close()
+    db.close()
+
+    
