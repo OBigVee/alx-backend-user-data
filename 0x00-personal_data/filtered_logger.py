@@ -7,7 +7,7 @@ import mysql.connector
 from os import getenv
 
 
-PII_FIELDS = ("email", "phone", "ssn", "password", "ip")
+PII_FIELDS = ("name","email", "phone", "ssn", "password")
 
 
 def filter_datum(
@@ -51,17 +51,23 @@ def get_logger() -> logging.Logger:
     formatter = RedactingFormatter(PII_FIELDS)
     logger.setFormatter(formatter)
     logger.addHandler(streamH)
+
     return logger
     # return logger.info(logging.StreamHandler(RedactingFormatter))
 
 
 def get_db() -> mysql.connector.connection.MySQLConnection:
     """returns a connector to the DB"""
-    db_connection = mysql.connector.connection.MySQLConnection(
-        user=getenv("PERSONAL_DATA_DB_USERNAME", "root"),
-        password=getenv("PERSONAL_DATA_DB_PASSWORD", ""),
-        host=getenv("PERSONAL_DATA_DB_HOST", "localhost"),
-        database=getenv("PERSONAL_DATA_DB_NAME"),
+    host = os.getenv("PERSONAL_DATA_DB_HOST", "localhost")
+    name = os.getenv("PERSONAL_DATA_DB_NAME", "")
+    user = os.getenv("PERSONAL_DATA_DB_USERNAME", "root")
+    pwd = os.getenv("PERSONAL_DATA_DB_PASSWORD", "")
+    db_connection = mysql.connector.connect(
+        host=host,
+        port=3306,
+        user=user,
+        password=pwd,
+        database=name
     )
     return db_connection
 
