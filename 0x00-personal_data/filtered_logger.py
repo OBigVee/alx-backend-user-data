@@ -4,6 +4,7 @@ import re
 import logging
 from typing import List
 import mysql.connector
+import os
 from os import getenv
 
 
@@ -11,9 +12,14 @@ PII_FIELDS = ("name","email", "phone", "ssn", "password")
 
 
 def filter_datum(
-    fields: List[str], redaction: str, message: str, seperator: str) -> str:
+    fields: List[str], redaction: str, message: str, seperator: str
+    ) -> str:
+    """returns the log message obfuscated"""
     for i in fields:
-        message = re.sub(i + "=.*?" + seperator, i + "=" + redaction + seperator, message)
+        # re.sub(pattern, replace, string(message) );
+        message = re.sub(
+            i + "=.*?" + seperator, i + "=" + redaction + seperator, message
+        )
     return message
 
 
