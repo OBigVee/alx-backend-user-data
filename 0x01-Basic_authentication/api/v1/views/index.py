@@ -10,12 +10,14 @@ def unauthorized() -> str:
     """GET /api/v1/unauthorized"""
     abort(401, description="Unauthorized")
 
+
 @app_views.route("/forbidden", methods=["GET"], strict_slashes=False)
 def forbidden() -> str:
-  """_summary_
-  get endpoint, it raisea 403 error 
-  """
-  abort(403, description="Forbidden")
+    """_summary_
+    get endpoint, it raisea 403 error
+    """
+    abort(403, description="Forbidden")
+
 
 @app_views.route("/status", methods=["GET"], strict_slashes=False)
 def status() -> str:
