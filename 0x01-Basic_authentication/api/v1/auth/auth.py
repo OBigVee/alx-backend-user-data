@@ -13,7 +13,7 @@ class Auth:
         """ " """
         pass
 
-    def require(self, path: str, excluded_paths: List[str]) -> bool:
+    def require_auth(self, path: str, exluded_paths: List[str]) -> bool:
         """_summary_
 
         Args:
